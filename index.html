@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tic Tac Toe - Firebase Auth</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Arial', sans-serif;
@@ -20,6 +16,7 @@
       align-items: center;
       justify-content: center;
       color: white;
+      padding: 20px;
     }
 
     .container {
@@ -28,8 +25,8 @@
       border-radius: 20px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       color: #333;
-      max-width: 400px;
-      width: 90%;
+      max-width: 420px;
+      width: 95%;
     }
 
     .auth-container h2 {
@@ -39,17 +36,13 @@
       font-size: 2rem;
     }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
-
+    .form-group { margin-bottom: 20px; }
     .form-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
       color: #555;
     }
-
     .form-group input {
       width: 100%;
       padding: 12px;
@@ -58,11 +51,7 @@
       font-size: 1rem;
       transition: border-color 0.3s;
     }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: #667eea;
-    }
+    .form-group input:focus { outline: none; border-color: #667eea; }
 
     .btn {
       width: 100%;
@@ -77,30 +66,11 @@
       transition: all 0.3s;
       margin-bottom: 10px;
     }
+    .btn:hover { background: #5568d3; transform: translateY(-2px); }
+    .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
 
-    .btn:hover {
-      background: #5568d3;
-      transform: translateY(-2px);
-    }
-
-    .btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .toggle-text {
-      text-align: center;
-      margin-top: 20px;
-      color: #666;
-    }
-
-    .toggle-text a {
-      color: #667eea;
-      cursor: pointer;
-      text-decoration: underline;
-      font-weight: bold;
-    }
+    .toggle-text { text-align: center; margin-top: 20px; color: #666; }
+    .toggle-text a { color: #667eea; cursor: pointer; text-decoration: underline; font-weight: bold; }
 
     .error-msg {
       background: #fee;
@@ -110,7 +80,6 @@
       margin-bottom: 15px;
       display: none;
     }
-
     .success-msg {
       background: #efe;
       color: #3c3;
@@ -120,21 +89,12 @@
       display: none;
     }
 
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #667eea;
-      font-size: 1.2rem;
-    }
+    .loading { text-align: center; padding: 20px; color: #667eea; font-size: 1.2rem; }
 
     /* Game Styles */
-    .game-container {
-      display: none;
-      text-align: center;
-    }
-
+    .game-container { display: none; text-align: center; width: 100%; }
     h1 {
-      font-size: 3rem;
+      font-size: 2.4rem;
       margin-bottom: 20px;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
       color: white;
@@ -148,12 +108,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 500px;
+      max-width: 600px;
+      gap: 10px;
+      margin-inline: auto;
+      flex-wrap: wrap;
     }
-
-    .user-info .stats {
-      font-size: 1.1rem;
-    }
+    .user-info .stats { font-size: 1.05rem; }
 
     .logout-btn {
       padding: 8px 20px;
@@ -165,14 +125,10 @@
       font-weight: bold;
       transition: all 0.3s;
     }
-
-    .logout-btn:hover {
-      background: white;
-      color: #667eea;
-    }
+    .logout-btn:hover { background: white; color: #667eea; }
 
     .game-info {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       margin-bottom: 20px;
       min-height: 40px;
       color: white;
@@ -180,55 +136,44 @@
 
     .board {
       display: grid;
-      grid-template-columns: repeat(3, 120px);
-      grid-template-rows: repeat(3, 120px);
+      grid-template-columns: repeat(3, 110px);
+      grid-template-rows: repeat(3, 110px);
       gap: 10px;
       background: rgba(255,255,255,0.1);
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
       margin: 0 auto;
+      width: max-content;
     }
-
     .board button {
       background: white;
       border: none;
-      font-size: 3rem;
+      font-size: 2.6rem;
       font-weight: bold;
       cursor: pointer;
       border-radius: 10px;
       transition: all 0.3s ease;
       color: #667eea;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      width: 110px; height: 110px;
     }
-
-    .board button:hover:not(:disabled) {
-      background: #f0f0f0;
-      transform: scale(1.05);
-    }
-
-    .board button:disabled {
-      cursor: not-allowed;
-    }
-
-    .board button.x {
-      color: #667eea;
-    }
-
-    .board button.o {
-      color: #764ba2;
-    }
+    .board button:hover:not(:disabled) { background: #f0f0f0; transform: scale(1.05); }
+    .board button:disabled { cursor: not-allowed; }
+    .board button.x { color: #667eea; }
+    .board button.o { color: #764ba2; }
 
     .controls {
       margin-top: 30px;
       display: flex;
       gap: 15px;
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     button.reset, button.mode {
       padding: 12px 30px;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       background: white;
       color: #667eea;
       border: none;
@@ -238,20 +183,10 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
+    button.reset:hover, button.mode:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
 
-    button.reset:hover, button.mode:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    }
-
-    .winner {
-      animation: pulse 1s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
+    .winner { animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.05);} }
 
     .setup-warning {
       background: #fff3cd;
@@ -261,11 +196,7 @@
       margin-bottom: 20px;
       border: 2px solid #ffc107;
     }
-
-    .setup-warning strong {
-      display: block;
-      margin-bottom: 10px;
-    }
+    .setup-warning strong { display: block; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -275,26 +206,26 @@
       <strong>⚠️ Firebase Setup Required</strong>
       Please add your Firebase configuration in the script section below.
     </div>
-    
+
     <h2 id="authTitle">Login to Tic Tac Toe</h2>
     <div class="error-msg" id="errorMsg"></div>
     <div class="success-msg" id="successMsg"></div>
     <div class="loading" id="loading" style="display: none;">Loading...</div>
-    
+
     <form id="authForm" onsubmit="handleAuth(event)">
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" required placeholder="Enter email">
+        <input type="email" id="email" required placeholder="Enter email"/>
       </div>
-      
+
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" required minlength="6" placeholder="Enter password (min 6 characters)">
+        <input type="password" id="password" required minlength="6" placeholder="Enter password (min 6 characters)"/>
       </div>
-      
+
       <button type="submit" class="btn" id="authBtn">Login</button>
     </form>
-    
+
     <div class="toggle-text">
       <span id="toggleText">Don't have an account? <a onclick="toggleAuthMode()">Sign Up</a></span>
     </div>
@@ -303,19 +234,19 @@
   <!-- Game Container -->
   <div class="game-container" id="gameContainer">
     <h1>Tic Tac Toe</h1>
-    
+
     <div class="user-info">
       <div class="stats">
-        <strong id="usernameDisplay"></strong> | 
-        Wins: <span id="wins">0</span> | 
-        Losses: <span id="losses">0</span> | 
+        <strong id="usernameDisplay"></strong> |
+        Wins: <span id="wins">0</span> |
+        Losses: <span id="losses">0</span> |
         Draws: <span id="draws">0</span>
       </div>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
-    
+
     <div class="game-info" id="info">Player X's Turn</div>
-    
+
     <div class="board" id="board">
       <button onclick="play(0)"></button>
       <button onclick="play(1)"></button>
@@ -327,10 +258,10 @@
       <button onclick="play(7)"></button>
       <button onclick="play(8)"></button>
     </div>
-    
+
     <div class="controls">
       <button class="reset" onclick="resetGame()">New Game</button>
-      <button class="mode" onclick="toggleMode()">Mode: vs Computer</button>
+      <button class="mode" id="modeBtn" onclick="toggleMode()">Mode: vs Computer</button>
     </div>
   </div>
 
@@ -340,24 +271,318 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-firestore-compat.min.js"></script>
 
   <script>
-   // ⚠️ Firebase Config (keep your own keys/domains)
-const firebaseConfig = {
-  apiKey: "AIzaSyAhoiFinkrJ94qQPdVNFbeiiP0CFk4QcvA",
-  authDomain: "tictactoe-7a73a.firebaseapp.com",
-  projectId: "tictactoe-7a73a",
-  storageBucket: "tictactoe-7a73a.appspot.com", // ✅ corrected
-  messagingSenderId: "983053609124",
-  appId: "1:983053609124:web:6f294f4ca033cbf83d1e31",
-  measurementId: "G-MCMTMPST6G"
-};
+    // ⚠️ Firebase Config (use your own project keys)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhoiFinkrJ94qQPdVNFbeiiP0CFk4QcvA",
+      authDomain: "tictactoe-7a73a.firebaseapp.com",
+      projectId: "tictactoe-7a73a",
+      storageBucket: "tictactoe-7a73a.appspot.com",
+      messagingSenderId: "983053609124",
+      appId: "1:983053609124:web:6f294f4ca033cbf83d1e31",
+      measurementId: "G-MCMTMPST6G"
+    };
 
-// Initialize Firebase
-let auth, db;
-try {
-  firebase.initializeApp(firebaseConfig);
-  auth = firebase.auth();
-  db = firebase.firestore();
-  document.getElementById('setupWarning').style.display = 'none';
-} catch (error) {
-  console.error('Firebase initialization error:', error);
-}
+    let auth, db;
+
+    // Initialize Firebase
+    try {
+      firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      db = firebase.firestore();
+      document.getElementById('setupWarning').style.display = 'none';
+    } catch (error) {
+      console.error('Firebase initialization error:', error);
+    }
+
+    // ---------- Auth UI Logic ----------
+    let isLoginMode = true;
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+    const loadingEl = document.getElementById('loading');
+
+    function showError(message) {
+      errorMsg.style.display = 'block';
+      errorMsg.innerText = message;
+      successMsg.style.display = 'none';
+    }
+    function showSuccess(message) {
+      successMsg.style.display = 'block';
+      successMsg.innerText = message;
+      errorMsg.style.display = 'none';
+    }
+    function clearMessages() {
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+    }
+
+    function toggleAuthMode() {
+      isLoginMode = !isLoginMode;
+      document.getElementById('authTitle').innerText = isLoginMode ? "Login to Tic Tac Toe" : "Sign Up for Tic Tac Toe";
+      document.getElementById('authBtn').innerText = isLoginMode ? "Login" : "Sign Up";
+      document.getElementById('toggleText').innerHTML = isLoginMode
+        ? "Don't have an account? <a onclick='toggleAuthMode()'>Sign Up</a>"
+        : "Already have an account? <a onclick='toggleAuthMode()'>Login</a>";
+      clearMessages();
+    }
+
+    async function handleAuth(event) {
+      event.preventDefault();
+      clearMessages();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        showError("Please enter email and password.");
+        return;
+      }
+
+      try {
+        loadingEl.style.display = 'block';
+        if (isLoginMode) {
+          await auth.signInWithEmailAndPassword(email, password);
+          showSuccess("Logged in successfully.");
+        } else {
+          const cred = await auth.createUserWithEmailAndPassword(email, password);
+          showSuccess("Account created. Welcome!");
+          // Initialize stats document for new user
+          await initUserStats(cred.user);
+        }
+      } catch (error) {
+        showError(error.message);
+      } finally {
+        loadingEl.style.display = 'none';
+      }
+    }
+
+    function logout() {
+      auth.signOut();
+    }
+
+    // ---------- Firestore Stats ----------
+    async function initUserStats(user) {
+      const docRef = db.collection('users').doc(user.uid);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        await docRef.set({ wins: 0, losses: 0, draws: 0, email: user.email, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      }
+    }
+
+    async function loadStats(user) {
+      try {
+        const doc = await db.collection('users').doc(user.uid).get();
+        if (doc.exists) {
+          const { wins = 0, losses = 0, draws = 0 } = doc.data();
+          document.getElementById('wins').innerText = wins;
+          document.getElementById('losses').innerText = losses;
+          document.getElementById('draws').innerText = draws;
+        } else {
+          await initUserStats(user);
+          document.getElementById('wins').innerText = 0;
+          document.getElementById('losses').innerText = 0;
+          document.getElementById('draws').innerText = 0;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function updateStats(user, result) {
+      // result: 'win' | 'loss' | 'draw'
+      const docRef = db.collection('users').doc(user.uid);
+      const incField = result === 'win' ? 'wins' : result === 'loss' ? 'losses' : 'draws';
+      await docRef.set({
+        [incField]: firebase.firestore.FieldValue.increment(1),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      // Refresh UI
+      await loadStats(user);
+    }
+
+    // ---------- Auth State ----------
+    auth && auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        document.getElementById('authContainer').style.display = 'none';
+        document.getElementById('gameContainer').style.display = 'block';
+        document.getElementById('usernameDisplay').innerText = user.email || "Player";
+        await initUserStats(user);
+        await loadStats(user);
+        resetGame(); // fresh board on login
+      } else {
+        document.getElementById('authContainer').style.display = 'block';
+        document.getElementById('gameContainer').style.display = 'none';
+        clearMessages();
+      }
+    });
+
+    // ---------- Tic Tac Toe Logic ----------
+    const infoEl = document.getElementById('info');
+    const boardEl = document.getElementById('board');
+    const modeBtn = document.getElementById('modeBtn');
+
+    let board = Array(9).fill('');
+    let currentPlayer = 'X';         // Human always starts as X in fresh game
+    let gameOver = false;
+    let vsComputer = true;           // default mode: vs Computer
+
+    const winLines = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+
+    function renderBoard() {
+      for (let i = 0; i < 9; i++) {
+        const btn = boardEl.children[i];
+        btn.innerText = board[i];
+        btn.classList.remove('x','o','winner');
+        btn.disabled = !!board[i] || gameOver;
+        if (board[i] === 'X') btn.classList.add('x');
+        if (board[i] === 'O') btn.classList.add('o');
+      }
+      infoEl.innerText = gameOver ? infoEl.innerText : `Player ${currentPlayer}'s Turn`;
+    }
+
+    function resetGame() {
+      board = Array(9).fill('');
+      currentPlayer = 'X';
+      gameOver = false;
+      infoEl.classList.remove('winner');
+      renderBoard();
+    }
+
+    function toggleMode() {
+      vsComputer = !vsComputer;
+      modeBtn.innerText = vsComputer ? 'Mode: vs Computer' : 'Mode: 2 Players';
+      resetGame();
+    }
+
+    function checkWinner() {
+      for (const [a,b,c] of winLines) {
+        if (board[a] && board[a] === board[b] && board[b] === board[c]) {
+          // mark winner cells
+          boardEl.children[a].classList.add('winner');
+          boardEl.children[b].classList.add('winner');
+          boardEl.children[c].classList.add('winner');
+          return board[a]; // 'X' or 'O'
+        }
+      }
+      if (board.every(cell => cell)) return 'draw';
+      return null;
+    }
+
+    async function endGame(result) {
+      gameOver = true;
+      infoEl.classList.add('winner');
+      if (result === 'draw') {
+        infoEl.innerText = "It's a draw!";
+      } else {
+        infoEl.innerText = `Player ${result} wins!`;
+      }
+
+      // Update stats if logged in
+      const user = auth && auth.currentUser;
+      if (user) {
+        if (result === 'draw') {
+          await updateStats(user, 'draw');
+        } else {
+          // If vs computer: X (human) win -> win; O (computer) win -> loss
+          // If 2 players: treat current user as X; winning X -> win; winning O -> loss
+          const outcome = (result === 'X') ? 'win' : 'loss';
+          await updateStats(user, outcome);
+        }
+      }
+    }
+
+    function play(index) {
+      if (gameOver || board[index]) return;
+
+      // Human move
+      board[index] = currentPlayer;
+      renderBoard();
+
+      // Check result after human move
+      const result = checkWinner();
+      if (result) {
+        endGame(result);
+        return;
+      }
+
+      // Switch player
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      infoEl.innerText = `Player ${currentPlayer}'s Turn`;
+
+      // Computer move (if enabled)
+      if (vsComputer && currentPlayer === 'O' && !gameOver) {
+        setTimeout(() => {
+          computerMove();
+        }, 350);
+      }
+    }
+
+    function computerMove() {
+      // Simple AI:
+      // 1) Try to win
+      // 2) Block opponent
+      // 3) Take center
+      // 4) Take a corner
+      // 5) Take any side
+
+      const ai = 'O', human = 'X';
+
+      // helper to simulate move
+      const tryMove = (mark) => {
+        for (const [a,b,c] of winLines) {
+          const line = [board[a], board[b], board[c]];
+          const countMark = line.filter(v => v === mark).length;
+          const countEmpty = line.filter(v => v === '').length;
+          if (countMark === 2 && countEmpty === 1) {
+            if (board[a] === '') return a;
+            if (board[b] === '') return b;
+            if (board[c] === '') return c;
+          }
+        }
+        return -1;
+      };
+
+      // 1) Win if possible
+      let move = tryMove(ai);
+      if (move === -1) {
+        // 2) Block human
+        move = tryMove(human);
+      }
+      if (move === -1 && board[4] === '') {
+        // 3) Center
+        move = 4;
+      }
+      if (move === -1) {
+        // 4) Corner
+        const corners = [0,2,6,8].filter(i => board[i] === '');
+        if (corners.length) move = corners[Math.floor(Math.random()*corners.length)];
+      }
+      if (move === -1) {
+        // 5) Side
+        const sides = [1,3,5,7].filter(i => board[i] === '');
+        if (sides.length) move = sides[Math.floor(Math.random()*sides.length)];
+      }
+
+      if (move !== -1) {
+        board[move] = 'O';
+        renderBoard();
+      }
+
+      const result = checkWinner();
+      if (result) {
+        endGame(result);
+        return;
+      }
+
+      currentPlayer = 'X';
+      infoEl.innerText = `Player ${currentPlayer}'s Turn`;
+    }
+
+    // Initial render (in case auth state already set)
+    renderBoard();
+  </script>
+</body>
+</html>
