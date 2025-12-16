@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic Tac Toe</title>
+  <title>Tic Tac Toe - Firebase Auth</title>
   <style>
     * {
       margin: 0;
@@ -22,16 +22,160 @@
       color: white;
     }
 
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      color: #333;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .auth-container h2 {
+      color: #667eea;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 10px;
+    }
+
+    .btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .toggle-text {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+
+    .toggle-text a {
+      color: #667eea;
+      cursor: pointer;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    .error-msg {
+      background: #fee;
+      color: #c33;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .success-msg {
+      background: #efe;
+      color: #3c3;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #667eea;
+      font-size: 1.2rem;
+    }
+
+    /* Game Styles */
+    .game-container {
+      display: none;
+      text-align: center;
+    }
+
     h1 {
       font-size: 3rem;
       margin-bottom: 20px;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      color: white;
+    }
+
+    .user-info {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 500px;
+    }
+
+    .user-info .stats {
+      font-size: 1.1rem;
+    }
+
+    .logout-btn {
+      padding: 8px 20px;
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid white;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: white;
+      color: #667eea;
     }
 
     .game-info {
       font-size: 1.5rem;
       margin-bottom: 20px;
       min-height: 40px;
+      color: white;
     }
 
     .board {
@@ -43,6 +187,7 @@
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      margin: 0 auto;
     }
 
     .board button {
@@ -78,6 +223,7 @@
       margin-top: 30px;
       display: flex;
       gap: 15px;
+      justify-content: center;
     }
 
     button.reset, button.mode {
@@ -106,130 +252,112 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
+
+    .setup-warning {
+      background: #fff3cd;
+      color: #856404;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 2px solid #ffc107;
+    }
+
+    .setup-warning strong {
+      display: block;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>Tic Tac Toe</h1>
-  <div class="game-info" id="info">Player X's Turn</div>
-  <div class="board" id="board">
-    <button onclick="play(0)"></button>
-    <button onclick="play(1)"></button>
-    <button onclick="play(2)"></button>
-    <button onclick="play(3)"></button>
-    <button onclick="play(4)"></button>
-    <button onclick="play(5)"></button>
-    <button onclick="play(6)"></button>
-    <button onclick="play(7)"></button>
-    <button onclick="play(8)"></button>
+  <!-- Authentication Container -->
+  <div class="container auth-container" id="authContainer">
+    <div class="setup-warning" id="setupWarning">
+      <strong>⚠️ Firebase Setup Required</strong>
+      Please add your Firebase configuration in the script section below.
+    </div>
+    
+    <h2 id="authTitle">Login to Tic Tac Toe</h2>
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+    <div class="loading" id="loading" style="display: none;">Loading...</div>
+    
+    <form id="authForm" onsubmit="handleAuth(event)">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="Enter email">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required minlength="6" placeholder="Enter password (min 6 characters)">
+      </div>
+      
+      <button type="submit" class="btn" id="authBtn">Login</button>
+    </form>
+    
+    <div class="toggle-text">
+      <span id="toggleText">Don't have an account? <a onclick="toggleAuthMode()">Sign Up</a></span>
+    </div>
   </div>
-  <div class="controls">
-    <button class="reset" onclick="resetGame()">New Game</button>
-    <button class="mode" onclick="toggleMode()">Mode: vs Computer</button>
+
+  <!-- Game Container -->
+  <div class="game-container" id="gameContainer">
+    <h1>Tic Tac Toe</h1>
+    
+    <div class="user-info">
+      <div class="stats">
+        <strong id="usernameDisplay"></strong> | 
+        Wins: <span id="wins">0</span> | 
+        Losses: <span id="losses">0</span> | 
+        Draws: <span id="draws">0</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="game-info" id="info">Player X's Turn</div>
+    
+    <div class="board" id="board">
+      <button onclick="play(0)"></button>
+      <button onclick="play(1)"></button>
+      <button onclick="play(2)"></button>
+      <button onclick="play(3)"></button>
+      <button onclick="play(4)"></button>
+      <button onclick="play(5)"></button>
+      <button onclick="play(6)"></button>
+      <button onclick="play(7)"></button>
+      <button onclick="play(8)"></button>
+    </div>
+    
+    <div class="controls">
+      <button class="reset" onclick="resetGame()">New Game</button>
+      <button class="mode" onclick="toggleMode()">Mode: vs Computer</button>
+    </div>
   </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-app-compat.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-auth-compat.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-firestore-compat.min.js"></script>
 
   <script>
-    let board = ['', '', '', '', '', '', '', '', ''];
-    let currentPlayer = 'X';
-    let gameActive = true;
-    let vsComputer = true;
+   // ⚠️ Firebase Config (keep your own keys/domains)
+const firebaseConfig = {
+  apiKey: "AIzaSyAhoiFinkrJ94qQPdVNFbeiiP0CFk4QcvA",
+  authDomain: "tictactoe-7a73a.firebaseapp.com",
+  projectId: "tictactoe-7a73a",
+  storageBucket: "tictactoe-7a73a.appspot.com", // ✅ corrected
+  messagingSenderId: "983053609124",
+  appId: "1:983053609124:web:6f294f4ca033cbf83d1e31",
+  measurementId: "G-MCMTMPST6G"
+};
 
-    const winPatterns = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-      [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-      [0, 4, 8], [2, 4, 6]             // diagonals
-    ];
-
-    function play(index) {
-      if (!gameActive || board[index] !== '') return;
-
-      makeMove(index, currentPlayer);
-
-      if (checkWin()) {
-        document.getElementById('info').textContent = `Player ${currentPlayer} Wins! 🎉`;
-        gameActive = false;
-        highlightWinner();
-        return;
-      }
-
-      if (checkDraw()) {
-        document.getElementById('info').textContent = "It's a Draw! 🤝";
-        gameActive = false;
-        return;
-      }
-
-      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-      updateInfo();
-
-      if (vsComputer && currentPlayer === 'O' && gameActive) {
-        setTimeout(computerMove, 500);
-      }
-    }
-
-    function makeMove(index, player) {
-      board[index] = player;
-      const buttons = document.querySelectorAll('.board button');
-      buttons[index].textContent = player;
-      buttons[index].classList.add(player.toLowerCase());
-      buttons[index].disabled = true;
-    }
-
-    function computerMove() {
-      let availableMoves = board.map((val, idx) => val === '' ? idx : null).filter(val => val !== null);
-      
-      if (availableMoves.length === 0) return;
-
-      let move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-      play(move);
-    }
-
-    function checkWin() {
-      return winPatterns.some(pattern => {
-        const [a, b, c] = pattern;
-        return board[a] && board[a] === board[b] && board[a] === board[c];
-      });
-    }
-
-    function checkDraw() {
-      return board.every(cell => cell !== '');
-    }
-
-    function highlightWinner() {
-      winPatterns.forEach(pattern => {
-        const [a, b, c] = pattern;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-          const buttons = document.querySelectorAll('.board button');
-          buttons[a].classList.add('winner');
-          buttons[b].classList.add('winner');
-          buttons[c].classList.add('winner');
-        }
-      });
-    }
-
-    function updateInfo() {
-      document.getElementById('info').textContent = `Player ${currentPlayer}'s Turn`;
-    }
-
-    function resetGame() {
-      board = ['', '', '', '', '', '', '', '', ''];
-      currentPlayer = 'X';
-      gameActive = true;
-      
-      const buttons = document.querySelectorAll('.board button');
-      buttons.forEach(button => {
-        button.textContent = '';
-        button.disabled = false;
-        button.classList.remove('x', 'o', 'winner');
-      });
-      
-      updateInfo();
-    }
-
-    function toggleMode() {
-      vsComputer = !vsComputer;
-      const modeButton = document.querySelector('.mode');
-      modeButton.textContent = vsComputer ? 'Mode: vs Computer' : 'Mode: 2 Players';
-      resetGame();
-    }
-  </script>
-</body>
-</html>
+// Initialize Firebase
+let auth, db;
+try {
+  firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db = firebase.firestore();
+  document.getElementById('setupWarning').style.display = 'none';
+} catch (error) {
+  console.error('Firebase initialization error:', error);
+}
