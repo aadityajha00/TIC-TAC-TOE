@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .game-info {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      min-height: 40px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 120px);
+      grid-template-rows: repeat(3, 120px);
+      gap: 10px;
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .board button {
+      background: white;
+      border: none;
+      font-size: 3rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      color: #667eea;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .board button:hover:not(:disabled) {
+      background: #f0f0f0;
+      transform: scale(1.05);
+    }
+
+    .board button:disabled {
+      cursor: not-allowed;
+    }
+
+    .board button.x {
+      color: #667eea;
+    }
+
+    .board button.o {
+      color: #764ba2;
+    }
+
+    .controls {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+    }
+
+    button.reset, button.mode {
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      background: white;
+      color: #667eea;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    button.reset:hover, button.mode:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    .winner {
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+  </style>
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <div class="game-info" id="info">Player X's Turn</div>
+  <div class="board" id="board">
+    <button onclick="play(0)"></button>
+    <button onclick="play(1)"></button>
+    <button onclick="play(2)"></button>
+    <button onclick="play(3)"></button>
+    <button onclick="play(4)"></button>
+    <button onclick="play(5)"></button>
+    <button onclick="play(6)"></button>
+    <button onclick="play(7)"></button>
+    <button onclick="play(8)"></button>
+  </div>
+  <div class="controls">
+    <button class="reset" onclick="resetGame()">New Game</button>
+    <button class="mode" onclick="toggleMode()">Mode: vs Computer</button>
+  </div>
+
+  <script>
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let currentPlayer = 'X';
+    let gameActive = true;
+    let vsComputer = true;
+
+    const winPatterns = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+      [0, 4, 8], [2, 4, 6]             // diagonals
+    ];
+
+    function play(index) {
+      if (!gameActive || board[index] !== '') return;
+
+      makeMove(index, currentPlayer);
+
+      if (checkWin()) {
+        document.getElementById('info').textContent = `Player ${currentPlayer} Wins! 🎉`;
+        gameActive = false;
+        highlightWinner();
+        return;
+      }
+
+      if (checkDraw()) {
+        document.getElementById('info').textContent = "It's a Draw! 🤝";
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      updateInfo();
+
+      if (vsComputer && currentPlayer === 'O' && gameActive) {
+        setTimeout(computerMove, 500);
+      }
+    }
+
+    function makeMove(index, player) {
+      board[index] = player;
+      const buttons = document.querySelectorAll('.board button');
+      buttons[index].textContent = player;
+      buttons[index].classList.add(player.toLowerCase());
+      buttons[index].disabled = true;
+    }
+
+    function computerMove() {
+      let availableMoves = board.map((val, idx) => val === '' ? idx : null).filter(val => val !== null);
+      
+      if (availableMoves.length === 0) return;
+
+      let move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+      play(move);
+    }
+
+    function checkWin() {
+      return winPatterns.some(pattern => {
+        const [a, b, c] = pattern;
+        return board[a] && board[a] === board[b] && board[a] === board[c];
+      });
+    }
+
+    function checkDraw() {
+      return board.every(cell => cell !== '');
+    }
+
+    function highlightWinner() {
+      winPatterns.forEach(pattern => {
+        const [a, b, c] = pattern;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          const buttons = document.querySelectorAll('.board button');
+          buttons[a].classList.add('winner');
+          buttons[b].classList.add('winner');
+          buttons[c].classList.add('winner');
+        }
+      });
+    }
+
+    function updateInfo() {
+      document.getElementById('info').textContent = `Player ${currentPlayer}'s Turn`;
+    }
+
+    function resetGame() {
+      board = ['', '', '', '', '', '', '', '', ''];
+      currentPlayer = 'X';
+      gameActive = true;
+      
+      const buttons = document.querySelectorAll('.board button');
+      buttons.forEach(button => {
+        button.textContent = '';
+        button.disabled = false;
+        button.classList.remove('x', 'o', 'winner');
+      });
+      
+      updateInfo();
+    }
+
+    function toggleMode() {
+      vsComputer = !vsComputer;
+      const modeButton = document.querySelector('.mode');
+      modeButton.textContent = vsComputer ? 'Mode: vs Computer' : 'Mode: 2 Players';
+      resetGame();
+    }
+  </script>
+</body>
+</html>
